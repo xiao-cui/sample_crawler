@@ -1,15 +1,14 @@
 package simple_crawler;
 
-//实例来自http://blog.csdn.net/pleasecallmewhy/article/details/17538809
-
-import java.io.*;
-import java.net.*;
-import java.sql.ResultSet;
+import java.io.BufferedReader;
+import java.io.InputStreamReader;
+import java.net.URL;
+import java.net.URLConnection;
 import java.util.ArrayList;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class first_crawler{
+public class Spider {
 	
 	static String sendGet(String url) {
 		//define a variable storing web content
@@ -48,31 +47,35 @@ public class first_crawler{
 		return result;
 	}
 
-	static ArrayList<String> RegexString(String targetStr, String patternStr) {
+	static ArrayList<Zhihu> GetZhihu(String content) {
 		//use arraylist to store matched sub-string
-		ArrayList<String> results=new ArrayList<String>();
-		//define a pattern
-		Pattern pattern=Pattern.compile(patternStr);
-		//define a matcher
-		Matcher matcher=pattern.matcher(targetStr);
+		ArrayList<Zhihu> results=new ArrayList<Zhihu>();
+		
+		//define a pattern to retrieve questions
+		Pattern questionPattern=Pattern.compile("question_link.+?>(.+?)<");
+		//define a matcher to retrieve questions
+		Matcher questionMatcher=questionPattern.matcher(content);
+		
+		//define a pattern to retrieve questions
+		Pattern urlPattern=Pattern.compile("question_link.+?href=\"(.+?)\"");
+		//define a matcher to retrieve questions
+		Matcher urlMatcher=urlPattern.matcher(content);
+		
+		
 		//if found
-		boolean isFind=matcher.find();
+		boolean isFind=questionMatcher.find() && urlMatcher.find();
 		while(isFind){
-			results.add(matcher.group(1));
-			//move to next matched sub-string
-			isFind=matcher.find();
+			//define a Zhihu object storing matched sub-content
+			Zhihu zhihuTemp=new Zhihu();
+			zhihuTemp.question=questionMatcher.group(1);
+			zhihuTemp.zhihuUrl=urlMatcher.group(1);
+			
+			//add to results
+			results.add(zhihuTemp);
+			//move to next matched sub-content
+			isFind=questionMatcher.find() && urlMatcher.find();
 		}
 		return results;
-	}
-	
-	public static void main(String[] args) {
-		//define a url
-		String url="http://www.zhihu.com/explore/recommendations";
-		//visit the specified url and retrieve web content
-		String result=sendGet(url);
-		//use pattern to find src content
-		ArrayList<String> imgSrc=RegexString(result, "question_link.+?>(.+?)<");
-		System.out.println(imgSrc);
 	}
 
 }

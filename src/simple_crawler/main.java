@@ -8,8 +8,8 @@ public class main {
 		String url="http://www.zhihu.com/explore/recommendations";
 		//visit the specified url and retrieve web content
 		String content=Spider.sendGet(url);
-		//use pre-defined pattern to find questions and their answers
-		ArrayList<Zhihu> myZhihu=Spider.GetZhihu(content);
+		//retrieve recommended questions
+		ArrayList<Zhihu> myZhihu=Spider.GetRecommendations(content);
 		System.out.print(myZhihu);
 	}
 }

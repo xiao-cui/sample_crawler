@@ -47,33 +47,25 @@ public class Spider {
 		return result;
 	}
 
-	static ArrayList<Zhihu> GetZhihu(String content) {
+	//retrieve Zhihu that are recommended by editors (i.e. questions on current page)
+	static ArrayList<Zhihu> GetRecommendations(String content) {
 		//use arraylist to store matched sub-string
 		ArrayList<Zhihu> results=new ArrayList<Zhihu>();
 		
-		//define a pattern to retrieve questions
-		Pattern questionPattern=Pattern.compile("question_link.+?>(.+?)<");
-		//define a matcher to retrieve questions
-		Matcher questionMatcher=questionPattern.matcher(content);
-		
-		//define a pattern to retrieve questions
-		Pattern urlPattern=Pattern.compile("question_link.+?href=\"(.+?)\"");
-		//define a matcher to retrieve questions
-		Matcher urlMatcher=urlPattern.matcher(content);
-		
-		
+		//define a pattern to retrieve question's url
+		Pattern pattern=Pattern.compile("<h2>.+?question_link.+?href=\"(.+?)\".+?</h2>");
+		Matcher matcher=pattern.matcher(content);
+				
 		//if found
-		boolean isFind=questionMatcher.find() && urlMatcher.find();
+		boolean isFind=matcher.find();
 		while(isFind){
-			//define a Zhihu object storing matched sub-content
-			Zhihu zhihuTemp=new Zhihu();
-			zhihuTemp.question=questionMatcher.group(1);
-			zhihuTemp.zhihuUrl=urlMatcher.group(1);
-			
+			//define a Zhihu object
+			//retrieve question's title, question's content, and its answers through question_link
+			Zhihu zhihuTemp=new Zhihu(matcher.group(1));
 			//add to results
 			results.add(zhihuTemp);
 			//move to next matched sub-content
-			isFind=questionMatcher.find() && urlMatcher.find();
+			isFind=matcher.find();
 		}
 		return results;
 	}

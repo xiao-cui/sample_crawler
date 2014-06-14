@@ -1,7 +1,11 @@
 package simple_crawler;
 
+//实例来自http://blog.csdn.net/pleasecallmewhy/article/details/17538809
+
 import java.io.*;
 import java.net.*;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 public class first_crawler{
 	
@@ -28,6 +32,7 @@ public class first_crawler{
 			}
 		}catch(Exception e){
 			System.out.println("发送GET请求出现异常"+e);
+			e.printStackTrace();
 		}finally{
 			//close inputstreamreader through keyword 'finnaly'
 			try{
@@ -37,17 +42,30 @@ public class first_crawler{
 			}catch(Exception e2){
 				e2.printStackTrace();
 			}
-			System.out.print(result);
 		}
 		return result;
 	}
 
+	static String RegexString(String targetStr, String patternStr) {
+		//define a pattern
+		Pattern pattern=Pattern.compile(patternStr);
+		//define a matcher
+		Matcher matcher=pattern.matcher(targetStr);
+		//if found
+		if(matcher.find()){
+			return matcher.group(1);
+		}
+		return "Nothing";
+	}
+	
 	public static void main(String[] args) {
 		//define a url
-		String url="http://www.baidu.com";
+		String url="http://www.zhihu.com/explore/recommendations";
 		//visit the specified url and retrieve web content
 		String result=sendGet(url);
-		System.out.println(result);
+		//use pattern to find src content
+		String imgSrc=RegexString(result, "question_link.+?>(.+?)<");
+		System.out.println(imgSrc);
 	}
 
 }

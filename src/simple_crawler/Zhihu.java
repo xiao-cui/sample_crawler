@@ -79,7 +79,24 @@ public class Zhihu {
 	// 根据自己的url抓取自己的问题和描述和答案  
     public boolean getAll() {
         return true;  
-    } 
+    }
+    
+    //给知乎的Zhihu封装类加个函数，用来格式化写入到本地时的排版
+    public String writeString(){
+    	String result="";
+    	result+="Question: "+question+"\r\n";
+    	result+="Description: "+questionDescription+"\r\n";
+    	result+="URL: "+zhihuUrl+"\r\n";
+    	for(int i=0; i<answers.size(); i++){
+    		result+="Answer"+"["+i+"]: "+answers.get(i)+"\r\n";
+    	}
+    	result+="\r\n\r\n\r\n";
+    	
+    	//把<br>换成io流里面的\r\n，再把所有的html标签都删除，这样看起来便会清晰很多
+    	result=result.replaceAll("<br>", "\r\n");
+    	result=result.replaceAll("<.*?>", "");
+    	return result;
+    }
     
 	
 }

@@ -10,6 +10,8 @@ public class main {
 		String content=Spider.sendGet(url);
 		//retrieve recommended questions
 		ArrayList<Zhihu> myZhihu=Spider.GetRecommendations(content);
-		System.out.print(myZhihu);
+		for(Zhihu zhihu: myZhihu){
+			FileReaderWriter.writeIntoFile(zhihu.writeString(), "X:/workspace/sample_crawler/知乎_编辑推荐.txt", true);
+		}
 	}
 }
